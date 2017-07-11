@@ -17,7 +17,7 @@ class DbModule {
     @Provides
     @Singleton
     fun provideOpenHelper(application: Application): OneDBOpenHelper {
-        return OneDBOpenHelper(application, OneDBOpenHelper.DATABASE_NAME, null)
+        return OneDBOpenHelper.getConnection(application) as OneDBOpenHelper
     }
 
     @Provides

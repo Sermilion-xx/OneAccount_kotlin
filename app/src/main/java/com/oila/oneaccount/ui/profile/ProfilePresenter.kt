@@ -31,11 +31,17 @@ constructor(private val dataManager: DataManager) : ProfileContract.Presenter() 
                 .subscribeBy(
                         onNext = {
                             if (it.isEmpty()) {
-                                dataManager.setProfileItems(SharedData.getInstance().items)
+                                val items = SharedData.getInstance().items
+                                dataManager.setProfileItems(items)
+                                view.showProfile(items)
+                            } else {
+                                view.showProfile(it)
                             }
-                            view.showProfile(it)
                         },
-                        onError = { view.showError() }
+                        onError = {
+                            view.showError()
+                            it.printStackTrace()
+                        }
                 )
     }
 

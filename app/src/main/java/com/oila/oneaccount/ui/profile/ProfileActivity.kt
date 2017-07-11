@@ -19,7 +19,7 @@ class ProfileActivity : BaseActivity(), ProfileContract.View {
     @Inject lateinit var profileAdapter: ProfileAdapter
 
     @BindView(R.id.toolbar) lateinit var toolbar: Toolbar
-    @BindView(R.id.recycler_view) lateinit var recyclerView: RecyclerView
+    @BindView(R.id.recyclerView) lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +32,6 @@ class ProfileActivity : BaseActivity(), ProfileContract.View {
         recyclerView.layoutManager = LinearLayoutManager(this)
         presenter.attachView(this)
         presenter.loadProfile()
-
     }
 
     override fun showProfile(profileItems : MutableList<ProfileItem>) {
@@ -48,6 +47,4 @@ class ProfileActivity : BaseActivity(), ProfileContract.View {
         super.onDestroy()
         presenter.detachView()
     }
-
-
 }

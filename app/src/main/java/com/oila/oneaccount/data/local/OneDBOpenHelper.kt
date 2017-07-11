@@ -46,16 +46,16 @@ class OneDBOpenHelper(context: Context, name: String, factory: SQLiteDatabase.Cu
         private var sqliteDb: SQLiteDatabase? = null
         private var INSTANCE: OneDBOpenHelper? = null
 
-        fun getConnection(context: Context): SQLiteDatabase? {
+        fun getConnection(context: Context): OneDBOpenHelper? {
             if (INSTANCE == null) {
                 INSTANCE = OneDBOpenHelper(context, DATABASE_NAME, null)
                 try {
-                    sqliteDb = INSTANCE!!.writableDatabase
+                    sqliteDb = INSTANCE?.writableDatabase
                 } catch (ex: SQLiteException) {
-                    sqliteDb = INSTANCE!!.readableDatabase
+                    sqliteDb = INSTANCE?.readableDatabase
                 }
             }
-            return sqliteDb
+            return INSTANCE
         }
     }
 }

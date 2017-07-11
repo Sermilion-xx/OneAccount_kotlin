@@ -23,6 +23,7 @@ import com.oila.oneaccount.ui.callbacks.OnListItemClicked
 import com.tubb.smrv.SwipeHorizontalMenuLayout
 import com.tubb.smrv.SwipeMenuLayout
 import com.tubb.smrv.listener.SwipeSwitchListener
+import org.jetbrains.anko.find
 import java.util.*
 import javax.inject.Inject
 
@@ -31,17 +32,18 @@ class ProfileAdapter
 @Inject
 constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
 
-    val isMyProfile:Boolean = false
+    val isMyProfile: Boolean = false
     val mIntentCallback: IntentCallback<Void>? = null
     val mProfileCallback: ProfileCallback? = null
     val mSaveCallback: OnListItemClicked<ProfileItem>? = null
 
-    var mItems  = mutableListOf<ProfileItem>()
+    var mItems = mutableListOf<ProfileItem>()
     private val selectedPositions: MutableSet<ProfileItem>
 
     init {
         this.selectedPositions = HashSet<ProfileItem>()
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileHolder {
         val inflater = LayoutInflater.from(parent.context)
         var layout = R.layout.item_profile_header
@@ -60,9 +62,9 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
 
     override fun onBindViewHolder(holder: ProfileHolder, position: Int) {
         val viewType = getItemViewType(holder.adapterPosition)
-        val item = mItems.get(position)
+        val item = mItems[position]
 
-        if (!isMyProfile && holder.mShared != null) {
+        if (!isMyProfile) {
             if (item.isShared) {
                 holder.mShared?.setImageResource(R.drawable.ic_tick_green)
             } else {
@@ -70,7 +72,7 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
             }
         }
 
-        if (isMyProfile && holder.mTick != null) {
+        if (isMyProfile) {
             if (item.isSelected) {
                 holder.mTick.setImageResource(R.drawable.ic_tick_green)
             } else {
@@ -81,13 +83,13 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
         val isShareableItem = viewType != TYPE_CUSTOM_FIELDS_SEPARATOR && viewType != TYPE_CONTACTS && viewType != TYPE_HEADER
         if (isShareableItem) {
             if (item.isShared) {
-                if (holder.mTick.visibility === View.VISIBLE) {
+                if (holder.mTick.visibility == View.VISIBLE) {
                     item.isShared = false
                 }
                 holder.mTick.visibility = View.GONE
             }
 
-            holder.mClickArea.setOnClickListener({ v ->
+            holder.mClickArea.setOnClickListener({
                 if (selectedPositions.size > 0) {
                     markItemAsSelected(holder.mTick, item)
                 }
@@ -100,12 +102,12 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
         } else if (viewType == TYPE_PHOTO_FIELD) {
             setupPhotoItem(holder, item)
         } else if (viewType == TYPE_CONTACTS) {
-            holder.mContactsButton.setOnClickListener({ v -> mIntentCallback?.startIntent(null) })
+            holder.mContactsButton.setOnClickListener({ mIntentCallback?.startIntent(null) })
         }
     }
 
     private fun onSelectPressed(viewHolder: ProfileHolder, item: ProfileItem, position: Int) {
-        viewHolder.mSelect.setOnClickListener({ v ->
+        viewHolder.mSelect.setOnClickListener({
             markItemAsSelected(viewHolder.mTick, item)
             viewHolder.swipeHorizontalMenuLayout.smoothCloseMenu()
         })
@@ -148,13 +150,13 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
     private fun setupPhotoItem(viewHolder: ProfileHolder, item: ProfileItem) {
         setSwipeListener(viewHolder)
         viewHolder.mFieldTitle.setOnClickListener(
-                { v ->
+                {
                     val photoUri = Uri.parse(SharedData.getInstance().photoItem.value)
                     mProfileCallback?.getProfileBitmap(photoUri)
                 }
         )
 
-        viewHolder.mDelete.setOnClickListener({ v ->
+        viewHolder.mDelete.setOnClickListener({
             item.value = ""
             mProfileCallback?.showToast(R.string.photo_deleted)
             notifyItemChanged(viewHolder.adapterPosition)
@@ -182,7 +184,7 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
             viewHolder.mFieldTitleStatic.visibility = View.VISIBLE
         }
         viewHolder.mFieldTitle.text = key
-        viewHolder.mField.setOnEditorActionListener({ v, actionId, event ->
+        viewHolder.mField.setOnEditorActionListener({ v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 viewHolder.mField.clearFocus()
                 hideKeyboard(v)
@@ -190,7 +192,7 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
             false
         })
         setSwipeListener(viewHolder)
-        viewHolder.mDelete.setOnClickListener({ v ->
+        viewHolder.mDelete.setOnClickListener({
             if (getItemViewType(position) == TYPE_PRIMARY_FIELD) {
                 item.value = ""
                 viewHolder.mField.clearFocus()
@@ -220,7 +222,7 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
                 mItems[position].value = viewHolder.mField.text.toString()
                 viewHolder.mField.hint = item.key
                 viewHolder.mFieldTitleStatic.visibility = View.GONE
-                if (viewHolder.mField.text.toString() == "") {
+                if (viewHolder.mField.length() == 0) {
                     hideTitleText(viewHolder)
                     viewHolder.mFieldTitle.visibility = View.GONE
                 }
@@ -278,10 +280,8 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
 
     override fun getItemCount(): Int = mItems.size
 
-    inner class ProfileHolder(itemView: View, viewType: Int, isMine:Boolean) : RecyclerView.ViewHolder(itemView) {
-        @BindView(R.id.field) @Nullable
+    inner class ProfileHolder(itemView: View, viewType: Int, isMine: Boolean) : RecyclerView.ViewHolder(itemView) {
         lateinit var mField: EditText
-        @BindView(R.id.field_title) @Nullable
         lateinit var mFieldTitle: TextView
         @BindView(R.id.field_title_static) @Nullable
         lateinit var mFieldTitleStatic: TextView
@@ -297,8 +297,7 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
         lateinit var mBorderTop: View
         @BindView(R.id.border_bottom) @Nullable
         lateinit var mBorderBottom: View
-        @BindView(R.id.shared)
-        lateinit var mShared: ImageView
+        var mShared: ImageView? = null
         @BindView(R.id.swipe_layout) @Nullable
         lateinit var swipeHorizontalMenuLayout: SwipeHorizontalMenuLayout
         @BindView(R.id.smContentView) @Nullable
@@ -306,11 +305,37 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
 
         init {
             ButterKnife.bind(this, itemView)
+            if (viewType == TYPE_PRIMARY_FIELD || viewType == TYPE_CUSTOM_FIELDS) {
+                mField = itemView.find<EditText>(R.id.field)
+                mFieldTitle = itemView.find(R.id.field_title)
+            } else if (viewType == TYPE_PHOTO_FIELD) {
+                mFieldTitle = itemView.find<TextView>(R.id.field)
+            }
             if (!isMine) {
-                    mShared.visibility = View.VISIBLE
+                mShared = itemView.findViewById(R.id.shared) as ImageView?
+                mShared?.visibility = View.VISIBLE
             }
         }
 
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        val key = mItems[position].key
+        val type = mItems[position].type
+
+        if (type == FieldType.MARKER && key == ProfileItem.HEADER) {
+            return TYPE_HEADER
+        } else if (type == FieldType.PRIMARY_PHOTO) {
+            return TYPE_PHOTO_FIELD
+        } else if (type == FieldType.PRIMARY_CONTACTS) {
+            return TYPE_CONTACTS
+        } else if (type == FieldType.MARKER && key == ProfileItem.CONTACTS_SEPARATOR) {
+            return TYPE_CUSTOM_FIELDS_SEPARATOR
+        } else if (type == FieldType.PRIMARY_NAME) {
+            return TYPE_PRIMARY_FIELD
+        } else {
+            return TYPE_CUSTOM_FIELDS
+        }
     }
 
     companion object {
