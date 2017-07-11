@@ -22,22 +22,19 @@ class DatabaseHelper @Inject constructor(val db: BriteDatabase) {
 
     fun setProfileItems(profileItems: Collection<ProfileItem>): Observable<ProfileItem> {
         return Observable.create<ProfileItem>({ emitter ->
-            val transaction = db.newTransaction()
             try {
 //                db.delete(Db.ProfileTable.TABLE_PROFILE, null)
                 profileItems.forEach {
                     val result = db.insert(Db.ProfileTable.TABLE_PROFILE,
-                            Db.ProfileTable.toContentValues(it.key, it.value, it.key),
+                            Db.ProfileTable.toContentValues(it.key, it.value, it.type.name),
                             SQLiteDatabase.CONFLICT_REPLACE)
                     if (result >= 0) emitter.onNext(it)
                 }
-                transaction.markSuccessful()
                 emitter.onCompleted()
             } catch (exception: SQLException) {
                 Timber.e(exception)
                 emitter.onError(exception)
             }
-            transaction.end()
         }, Emitter.BackpressureMode.BUFFER)
     }
 }

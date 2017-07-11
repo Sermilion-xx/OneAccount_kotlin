@@ -32,17 +32,18 @@ class ProfileAdapter
 @Inject
 constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
 
-    val isMyProfile: Boolean = false
-    val mIntentCallback: IntentCallback<Void>? = null
-    val mProfileCallback: ProfileCallback? = null
-    val mSaveCallback: OnListItemClicked<ProfileItem>? = null
-
+    var isMyProfile: Boolean = false
+    var mIntentCallback: IntentCallback<Void>? = null
+    var mProfileCallback: ProfileCallback? = null
+    var mSaveCallback: OnListItemClicked<ProfileItem>? = null
     var mItems = mutableListOf<ProfileItem>()
-    private val selectedPositions: MutableSet<ProfileItem>
+    val selectedPositions: MutableSet<ProfileItem>
 
     init {
         this.selectedPositions = HashSet<ProfileItem>()
     }
+
+    fun getSelectedNum() = selectedPositions.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -74,24 +75,24 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
 
         if (isMyProfile) {
             if (item.isSelected) {
-                holder.mTick.setImageResource(R.drawable.ic_tick_green)
+                holder.mTick?.setImageResource(R.drawable.ic_tick_green)
             } else {
-                holder.mTick.visibility = View.GONE
+                holder.mTick?.visibility = View.GONE
             }
         }
 
         val isShareableItem = viewType != TYPE_CUSTOM_FIELDS_SEPARATOR && viewType != TYPE_CONTACTS && viewType != TYPE_HEADER
         if (isShareableItem) {
             if (item.isShared) {
-                if (holder.mTick.visibility == View.VISIBLE) {
+                if (holder.mTick?.visibility == View.VISIBLE) {
                     item.isShared = false
                 }
-                holder.mTick.visibility = View.GONE
+                holder.mTick?.visibility = View.GONE
             }
 
             holder.mClickArea.setOnClickListener({
                 if (selectedPositions.size > 0) {
-                    markItemAsSelected(holder.mTick, item)
+                    markItemAsSelected(holder.mTick!!, item)
                 }
             })
             onSelectPressed(holder, item, position)
@@ -108,7 +109,7 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
 
     private fun onSelectPressed(viewHolder: ProfileHolder, item: ProfileItem, position: Int) {
         viewHolder.mSelect.setOnClickListener({
-            markItemAsSelected(viewHolder.mTick, item)
+            markItemAsSelected(viewHolder.mTick!!, item)
             viewHolder.swipeHorizontalMenuLayout.smoothCloseMenu()
         })
     }
@@ -124,7 +125,7 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
             item.isSelected = false
         }
         mProfileCallback?.showSelectToolbar(selectedPositions.size)
-        mSaveCallback?.onClick(item)
+//        mSaveCallback?.onClick(item)
     }
 
     fun deselectItems() {
@@ -161,7 +162,7 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
             mProfileCallback?.showToast(R.string.photo_deleted)
             notifyItemChanged(viewHolder.adapterPosition)
             mSaveCallback?.onClick(item)
-            viewHolder.mTick.visibility = View.GONE
+            viewHolder.mTick?.visibility = View.GONE
             viewHolder.swipeHorizontalMenuLayout.smoothCloseMenu()
         })
         viewHolder.mDelete.setText(R.string.clear)
@@ -281,26 +282,18 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
     override fun getItemCount(): Int = mItems.size
 
     inner class ProfileHolder(itemView: View, viewType: Int, isMine: Boolean) : RecyclerView.ViewHolder(itemView) {
+
         lateinit var mField: EditText
         lateinit var mFieldTitle: TextView
-        @BindView(R.id.field_title_static) @Nullable
         lateinit var mFieldTitleStatic: TextView
-        @BindView(R.id.image) @Nullable
         lateinit var mContactsButton: ImageButton
-        @BindView(R.id.menu_right) @Nullable
         lateinit var mDelete: Button
-        @BindView(R.id.menu_left) @Nullable
         lateinit var mSelect: Button
-        @BindView(R.id.tick) @Nullable
-        lateinit var mTick: ImageView
-        @BindView(R.id.border_top) @Nullable
+        var mTick: ImageView? = null
         lateinit var mBorderTop: View
-        @BindView(R.id.border_bottom) @Nullable
         lateinit var mBorderBottom: View
         var mShared: ImageView? = null
-        @BindView(R.id.swipe_layout) @Nullable
         lateinit var swipeHorizontalMenuLayout: SwipeHorizontalMenuLayout
-        @BindView(R.id.smContentView) @Nullable
         lateinit var mClickArea: ViewGroup
 
         init {
@@ -308,11 +301,28 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
             if (viewType == TYPE_PRIMARY_FIELD || viewType == TYPE_CUSTOM_FIELDS) {
                 mField = itemView.find<EditText>(R.id.field)
                 mFieldTitle = itemView.find(R.id.field_title)
+                mFieldTitleStatic = itemView.find<TextView>(R.id.field_title_static)
+                swipeHorizontalMenuLayout = itemView.find<SwipeHorizontalMenuLayout>(R.id.swipe_layout)
+            } else if (viewType == TYPE_CONTACTS) {
+                mContactsButton = itemView.find<ImageButton>(R.id.image)
             } else if (viewType == TYPE_PHOTO_FIELD) {
                 mFieldTitle = itemView.find<TextView>(R.id.field)
+                swipeHorizontalMenuLayout = itemView.find<SwipeHorizontalMenuLayout>(R.id.swipe_layout)
+            }
+            if (viewType == TYPE_PHOTO_FIELD || viewType == TYPE_PRIMARY_FIELD || viewType == TYPE_CUSTOM_FIELDS) {
+                mDelete = itemView.find<Button>(R.id.menu_right)
+                mBorderTop = itemView.find(R.id.border_top)
+                mBorderBottom = itemView.find(R.id.border_bottom)
+            }
+            if (viewType != TYPE_CUSTOM_FIELDS_SEPARATOR
+                    && viewType != TYPE_CONTACTS
+                    && viewType != TYPE_HEADER) {
+                mSelect = itemView.find<Button>(R.id.menu_left)
+                mTick = itemView.find<ImageView>(R.id.tick)
+                mClickArea = itemView.find<ViewGroup>(R.id.smContentView)
             }
             if (!isMine) {
-                mShared = itemView.findViewById(R.id.shared) as ImageView?
+                mShared = itemView.find<ImageView>(R.id.shared)
                 mShared?.visibility = View.VISIBLE
             }
         }
@@ -345,17 +355,5 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
         private val TYPE_CUSTOM_FIELDS = 3
         private val TYPE_CUSTOM_FIELDS_SEPARATOR = 4
         private val TYPE_CONTACTS = 5
-
-//        fun createMyProfile(intentCallback: IntentCallback<Void>,
-//                            profileCallback: ProfileCallback,
-//                            saveCallback: OnListItemClicked<ProfileItem>): ProfileAdapter {
-//            return ProfileAdapter(true, intentCallback, profileCallback, saveCallback)
-//        }
-//
-//        fun createCompanyProfile(intentCallback: IntentCallback<Void>,
-//                                 mProfileCallback: ProfileCallback,
-//                                 mSaveCallback: OnListItemClicked<ProfileItem>): ProfileAdapter {
-//            return ProfileAdapter(false, intentCallback, mProfileCallback, mSaveCallback)
-//        }
     }
 }
