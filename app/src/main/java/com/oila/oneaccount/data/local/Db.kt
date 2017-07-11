@@ -18,7 +18,7 @@ object Db {
         val TABLE_PROFILE = "profile"
         val COLUMN_PROFILE_FIELD_NAME = "field_name"
         val COLUMN_PROFILE_FIELD_VALUE = "field_value"
-        val COLUMN_PROFILE_FIELD_TYPE = "getType"
+        val COLUMN_PROFILE_FIELD_TYPE = "type"
 
         val DB_CREATE_PROFILE = """
             CREATE TABLE $TABLE_PROFILE(
@@ -56,7 +56,8 @@ object Db {
         val COLUMN_HISTORY_SHARE_DATE = "share_date"
 
         val DB_CREATE_HISTORY = "create table " +
-                TABLE_HISTORY + " (" + COLUMN_HISTORY_REQUEST_ID + " integer PRIMARY KEY autoincrement, " +
+                TABLE_HISTORY + " (" + 
+                COLUMN_HISTORY_REQUEST_ID + " integer PRIMARY KEY autoincrement, " +
                 COLUMN_HISTORY_FIELD_NAME + " text not null, " +
                 COLUMN_HISTORY_FIELD_VALUE + " text not null, " +
                 COLUMN_HISTORY_SHARED + " integer, " +

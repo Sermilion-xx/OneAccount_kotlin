@@ -7,7 +7,7 @@ android {
     buildToolsVersion "25.0.2"
 
     defaultConfig {
-        applicationId "uk.co.ribot.androidboilerplate"
+        applicationId "com.oila.oneaccount"
         minSdkVersion 17
         targetSdkVersion 25
         versionCode 1
@@ -64,6 +64,10 @@ android {
     // https://github.com/square/okio/issues/58
     lintOptions {
         warning 'InvalidPackage'
+    }
+
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
     }
 
 }
@@ -159,6 +163,7 @@ dependencies {
 
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'uk.co.chrisjenx:calligraphy:2.2.0'
+    compile 'com.tubb.smrv:swipemenu-recyclerview:5.4.0'
 }
 
 kapt {

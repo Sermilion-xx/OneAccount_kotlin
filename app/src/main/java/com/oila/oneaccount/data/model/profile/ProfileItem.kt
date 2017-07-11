@@ -13,10 +13,10 @@ import java.util.Comparator
  */
 class ProfileItem(val key: String, var value: String, val type: FieldType) : Comparable<ProfileItem> {
 
-    override fun compareTo(o: ProfileItem): Int {
-        if (this.order > o.order) {
+    override fun compareTo(other: ProfileItem): Int {
+        if (this.order > other.order) {
             return 1
-        } else if (this.order < o.order) {
+        } else if (this.order < other.order) {
             return -1
         }
         return 0

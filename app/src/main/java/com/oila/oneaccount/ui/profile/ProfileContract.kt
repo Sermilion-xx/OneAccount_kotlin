@@ -7,8 +7,10 @@ import com.oila.oneaccount.ui.base.MvpView
 object ProfileContract {
 
     interface View: MvpView {
-        fun showProfile(profileItems: List<ProfileItem>)
+        fun showProfile(profileItems: MutableList<ProfileItem>)
         fun showError()
+        fun showProgress()
+        fun hideProgress()
     }
 
     abstract class Presenter: BasePresenter<View>() {

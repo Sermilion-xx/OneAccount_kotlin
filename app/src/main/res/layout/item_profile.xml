@@ -1,0 +1,88 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:clickable="true"
+    android:id="@+id/clickArea"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/border_top"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="top"
+        android:background="@color/colorWhite12"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/tick"
+        layout="@layout/tick" />
+
+    <FrameLayout
+        android:id="@+id/group"
+        android:layout_toStartOf="@+id/shared"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/tick">
+
+        <TextView
+            android:id="@+id/field_title"
+            style="@style/textStyleSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="36dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="20dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/field_title_static"
+            style="@style/textStyleSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="36dp"
+            android:layout_marginStart="36dp"
+            android:visibility="gone" />
+
+
+        <EditText
+            android:id="@+id/field"
+            style="@style/textStylePrimary"
+            android:layout_width="wrap_content"
+            android:minWidth="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginEnd="36dp"
+            android:layout_marginTop="20dp"
+            android:lines="1"
+            android:background="@null"
+            android:inputType="textNoSuggestions"
+            android:padding="0dp"
+            android:textColorHint="@color/colorWhite80" />
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/shared"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="35dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/ic_clear_orange"
+        android:visibility="gone" />
+
+    <View
+        android:id="@+id/border_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:background="@color/colorWhite12"
+        android:visibility="gone" />
+
+</RelativeLayout>

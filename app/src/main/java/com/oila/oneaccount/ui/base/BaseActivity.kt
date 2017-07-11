@@ -2,6 +2,7 @@ package com.oila.oneaccount.ui.base
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.support.annotation.Nullable
 import android.support.design.widget.NavigationView
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
@@ -12,6 +13,7 @@ import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ProgressBar
+import butterknife.BindView
 import com.oila.oneaccount.OneApplication
 import com.oila.oneaccount.R
 import com.oila.oneaccount.injection.component.ActivityComponent
@@ -34,10 +36,14 @@ open class BaseActivity : AppCompatActivity() {
         @JvmStatic private val componentsMap = HashMap<Long, ConfigPersistentComponent>()
     }
 
-    protected var mProgress: ProgressBar? = null
-    protected var mToolbar: Toolbar? = null
-    protected var mDrawer: DrawerLayout? = null
-    protected var navigationView: NavigationView? = null
+    @BindView(R.id.progressBar) @Nullable
+    lateinit var mProgress: ProgressBar
+    @BindView(R.id.toolbar) @Nullable
+    lateinit var mToolbar: Toolbar
+    @BindView(R.id.drawer_layout) @Nullable
+    lateinit var mDrawer: DrawerLayout
+    @BindView(R.id.navigation_view) @Nullable
+    lateinit var navigationView: NavigationView
     protected var mDrawerAdapter: DrawerAdapter? = null
     protected var mActionBarDrawerToggle: ActionBarDrawerToggle? = null
 
@@ -60,7 +66,6 @@ open class BaseActivity : AppCompatActivity() {
                     .build()
         })
         activityComponent = configPersistentComponent.activityComponent(ActivityModule(this))
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -76,7 +81,6 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     protected fun setupToolbar(title: String, vararg homeAsUpIndicator: Int): Toolbar? {
-        mToolbar = find(R.id.toolbar)
         if (mToolbar != null) {
             mToolbar!!.title = title
             setSupportActionBar(mToolbar)
@@ -92,7 +96,6 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     protected fun setupToolbar(title: String, drawable: Drawable): Toolbar? {
-        mToolbar = findViewById(R.id.toolbar) as Toolbar
         if (mToolbar != null) {
             mToolbar!!.title = title
             setSupportActionBar(mToolbar)
@@ -114,7 +117,6 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     private fun setupDrawerView(drawerListItems: List<DrawerItem>) {
-        mDrawer = find(R.id.drawer_layout)
         mDrawerAdapter = DrawerAdapter(drawerListItems)
         val mRecyclerView = find<RecyclerView>(R.id.left_drawer)
         val mLinearLayoutManager = LinearLayoutManager(this)
@@ -126,7 +128,6 @@ open class BaseActivity : AppCompatActivity() {
             mDrawer?.addDrawerListener(mActionBarDrawerToggle!!)
             mDrawer?.addDrawerListener(mActionBarDrawerToggle!!)
         }
-        navigationView = find(R.id.navigation_view)
         navigationView?.setNavigationItemSelectedListener({ item ->
             when (item.itemId) {
                 R.id.menu_home -> mDrawer?.closeDrawers()

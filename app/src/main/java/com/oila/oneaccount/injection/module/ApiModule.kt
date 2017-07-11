@@ -30,7 +30,7 @@ class ApiModule {
 
     @Provides
     @Singleton
-    fun provideRibotsService(okHttpClient: OkHttpClient, gson: Gson): OneAccountService {
+    fun provideOneAccountService(okHttpClient: OkHttpClient, gson: Gson): OneAccountService {
         return Retrofit.Builder()
                 .client(okHttpClient)
                 .baseUrl("https://api.ribot.io/")

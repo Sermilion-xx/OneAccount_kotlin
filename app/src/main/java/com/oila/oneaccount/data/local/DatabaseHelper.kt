@@ -24,7 +24,7 @@ class DatabaseHelper @Inject constructor(val db: BriteDatabase) {
         return Observable.create<ProfileItem>({ emitter ->
             val transaction = db.newTransaction()
             try {
-                db.delete(Db.ProfileTable.TABLE_PROFILE, null)
+//                db.delete(Db.ProfileTable.TABLE_PROFILE, null)
                 profileItems.forEach {
                     val result = db.insert(Db.ProfileTable.TABLE_PROFILE,
                             Db.ProfileTable.toContentValues(it.key, it.value, it.key),

@@ -16,7 +16,7 @@ class DataManager @Inject constructor(private val oneAccountService: OneAccountS
         return databaseHelper.getProfile()
     }
 
-    fun setProfileitems(items: List<ProfileItem>): Observable<ProfileItem> {
+    fun setProfileItems(items: List<ProfileItem>): Observable<ProfileItem> {
         return databaseHelper.setProfileItems(items)
     }
 }

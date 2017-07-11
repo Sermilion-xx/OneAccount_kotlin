@@ -20,7 +20,7 @@ interface ApplicationComponent {
 
     @ApplicationContext fun context(): Context
     fun application(): Application
-    fun ribotsService(): OneAccountService
+    fun oneAccountService(): OneAccountService
     fun databaseHelper(): DatabaseHelper
     fun dataManager(): DataManager
 }

@@ -1,14 +1,16 @@
 package com.oila.oneaccount.ui.main
 
+
+import com.oila.oneaccount.data.DataManager
+import com.oila.oneaccount.data.model.SharedData
+import com.oila.oneaccount.data.model.profile.ProfileItem
+import com.oila.oneaccount.injection.ConfigPersistent
 import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.lang.kotlin.subscribeBy
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 
-
-import rx.schedulers.Schedulers
-import timber.log.Timber
-import com.oila.oneaccount.data.DataManager
-import com.oila.oneaccount.injection.ConfigPersistent
-import io.reactivex.android.schedulers.AndroidSchedulers
 
 @ConfigPersistent
 class ProfilePresenter
@@ -24,15 +26,32 @@ constructor(private val dataManager: DataManager) : ProfileContract.Presenter() 
 
     override fun loadProfile() {
         subscription?.unsubscribe()
-//        subscription = dataManager.getItems()
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribeOn(Schedulers.io())
-//                .subscribeBy(
-//                    onNext = { if (it.isEmpty()) view.showRibotsEmpty() else view.showRibots(it) },
-//                    onError = {
-//                        Timber.e(it, "There was an error loading the items.")
-//                        view.showError()
-//                    }
-//                )
+        dataManager.getProfileItems()
+                .observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+                .subscribeBy(
+                        onNext = {
+                            if (it.isEmpty()) {
+                                dataManager.setProfileItems(SharedData.getInstance().items)
+                            }
+                            view.showProfile(it)
+                        },
+                        onError = { view.showError() }
+                )
+    }
+
+    fun saveProfile(items: List<ProfileItem>) {
+        subscription?.unsubscribe()
+        view.showProgress()
+        subscription = dataManager.setProfileItems(items)
+                .subscribeOn(Schedulers.io())
+                .subscribeBy(
+                        onCompleted = {
+                            view.hideProgress()
+                            loadProfile()
+                        },
+                        onError = {
+                            view.hideProgress()
+                        }
+                )
     }
 }

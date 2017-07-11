@@ -9,9 +9,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.oila.oneaccount.R
 
-
-import com.oila.oneaccount.ui.profile.ProfileActivity
-
 import de.hdodenhof.circleimageview.CircleImageView
 import org.jetbrains.anko.find
 
@@ -69,7 +66,7 @@ class DrawerAdapter(private val mItems: List<DrawerItem>) : RecyclerView.Adapter
             holder.mTitle.setOnClickListener {
                 var intent: Intent? = null
                 if (position == 0) {
-                    intent = Intent(mContext, ProfileActivity::class.java)
+//                    intent = Intent(mContext, ProfileActivity::class.java)
                 } else if (position == 1) {
                     //            intent = new Intent(mContext, HistoryActivity.class);
                 } else if (position == 2) {

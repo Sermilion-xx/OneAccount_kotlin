@@ -7,8 +7,6 @@ import android.support.v7.widget.Toolbar
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.oila.oneaccount.R
-import com.oila.oneaccount.data.SyncService
-import com.oila.oneaccount.data.model.Ribot
 import com.oila.oneaccount.data.model.profile.ProfileItem
 import com.oila.oneaccount.ui.base.BaseActivity
 import com.oila.oneaccount.ui.main.*
@@ -37,8 +35,8 @@ class ProfileActivity : BaseActivity(), ProfileContract.View {
 
     }
 
-    override fun showProfile(profileItems : List<ProfileItem>) {
-        profileAdapter.items = profileItems
+    override fun showProfile(profileItems : MutableList<ProfileItem>) {
+        profileAdapter.mItems = profileItems
         profileAdapter.notifyDataSetChanged()
     }
 
@@ -50,4 +48,6 @@ class ProfileActivity : BaseActivity(), ProfileContract.View {
         super.onDestroy()
         presenter.detachView()
     }
+
+
 }

@@ -8,7 +8,7 @@ import timber.log.Timber
 
 import java.sql.SQLException
 
-class OneDBOpenHelper(context: Context, name: String, factory: SQLiteDatabase.CursorFactory?, version: Int) : SQLiteOpenHelper(context, name, factory, version) {
+class OneDBOpenHelper(context: Context, name: String, factory: SQLiteDatabase.CursorFactory?) : SQLiteOpenHelper(context, name, factory, DATABASE_VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.beginTransaction()
@@ -48,7 +48,7 @@ class OneDBOpenHelper(context: Context, name: String, factory: SQLiteDatabase.Cu
 
         fun getConnection(context: Context): SQLiteDatabase? {
             if (INSTANCE == null) {
-                INSTANCE = OneDBOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION)
+                INSTANCE = OneDBOpenHelper(context, DATABASE_NAME, null)
                 try {
                     sqliteDb = INSTANCE!!.writableDatabase
                 } catch (ex: SQLiteException) {

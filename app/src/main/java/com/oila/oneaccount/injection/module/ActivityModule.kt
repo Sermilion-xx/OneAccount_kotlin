@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.Provides
 import com.oila.oneaccount.injection.ActivityContext
 import com.oila.oneaccount.injection.PerActivity
+import com.oila.oneaccount.ui.profile.ProfileAdapter
 
 @Module
 class ActivityModule(private val activity: Activity) {
@@ -22,4 +23,5 @@ class ActivityModule(private val activity: Activity) {
     internal fun providesContext(): Context {
         return activity
     }
+
 }
