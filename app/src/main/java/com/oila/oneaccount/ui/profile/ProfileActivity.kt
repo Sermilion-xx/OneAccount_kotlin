@@ -1,5 +1,6 @@
 package com.oila.oneaccount.ui.profile
 
+import android.app.Application
 import android.app.Dialog
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

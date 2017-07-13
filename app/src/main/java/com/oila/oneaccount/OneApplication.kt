@@ -13,7 +13,6 @@ open class OneApplication : Application() {
     lateinit var applicationComponent: ApplicationComponent
         private set
 
-
     override fun onCreate() {
         super.onCreate()
         INSTANCE = this

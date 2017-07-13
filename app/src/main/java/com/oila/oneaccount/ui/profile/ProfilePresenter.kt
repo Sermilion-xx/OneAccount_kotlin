@@ -32,7 +32,7 @@ constructor(private val dataManager: DataManager) : ProfileContract.Presenter() 
                         onNext = {
                             if (it.isEmpty()) {
                                 val items = SharedData.getInstance().items
-                                dataManager.setProfileItems(items)
+                                this.saveProfile(items)
                                 view.showProfile(items)
                             } else {
                                 view.showProfile(it)

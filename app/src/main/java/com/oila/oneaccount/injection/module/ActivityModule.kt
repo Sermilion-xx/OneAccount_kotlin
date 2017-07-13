@@ -9,7 +9,7 @@ import com.oila.oneaccount.injection.PerActivity
 import com.oila.oneaccount.ui.profile.ProfileAdapter
 
 @Module
-class ActivityModule(private val activity: Activity) {
+open class ActivityModule(protected val activity: Activity) {
 
     @Provides
     @PerActivity
@@ -22,6 +22,12 @@ class ActivityModule(private val activity: Activity) {
     @ActivityContext
     internal fun providesContext(): Context {
         return activity
+    }
+
+    @Provides
+    @PerActivity
+    internal fun provideAdapter(): ProfileAdapter {
+        return ProfileAdapter(activity.application)
     }
 
 }

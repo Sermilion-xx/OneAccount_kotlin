@@ -1,36 +1,35 @@
 package com.oila.oneaccount.ui.profile
 
-import android.content.Context
+import android.app.Application
 import android.net.Uri
-import android.support.annotation.Nullable
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import butterknife.BindView
 import butterknife.ButterKnife
 import com.oila.oneaccount.OneApplication
 import com.oila.oneaccount.R
 import com.oila.oneaccount.data.model.SharedData
 import com.oila.oneaccount.data.model.profile.FieldType
 import com.oila.oneaccount.data.model.profile.ProfileItem
+import com.oila.oneaccount.injection.ApplicationContext
 import com.oila.oneaccount.ui.callbacks.IntentCallback
 import com.oila.oneaccount.ui.callbacks.OnListItemClicked
+import com.oila.oneaccount.util.hideKeyboard
+import com.oila.oneaccount.util.showKeyboard
 import com.tubb.smrv.SwipeHorizontalMenuLayout
 import com.tubb.smrv.SwipeMenuLayout
 import com.tubb.smrv.listener.SwipeSwitchListener
 import org.jetbrains.anko.find
 import java.util.*
-import javax.inject.Inject
 
 
 class ProfileAdapter
-@Inject
-constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
+
+constructor(@ApplicationContext var app: Application) : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
 
     var isMyProfile: Boolean = false
     var mIntentCallback: IntentCallback<Void>? = null
@@ -188,7 +187,7 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
         viewHolder.mField.setOnEditorActionListener({ v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 viewHolder.mField.clearFocus()
-                hideKeyboard(v)
+                hideKeyboard(v, app)
             }
             false
         })
@@ -212,7 +211,7 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
 
         viewHolder.mField.setOnFocusChangeListener({ v, hasFocus ->
             if (hasFocus) {
-                showKeyboard(v)
+                showKeyboard(v, app)
                 viewHolder.mField.setText(item.value)
                 viewHolder.mField.setSelection(item.value.length)
                 viewHolder.mField.hint = ""
@@ -228,20 +227,11 @@ constructor() : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
                     viewHolder.mFieldTitle.visibility = View.GONE
                 }
                 mSaveCallback?.onClick(item)
-                hideKeyboard(v)
+                hideKeyboard(v, app)
             }
         })
     }
 
-    private fun hideKeyboard(v: View) {
-        val imm = OneApplication.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(v.windowToken, 0)
-    }
-
-    private fun showKeyboard(v: View) {
-        val imm = OneApplication.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT)
-    }
 
     private fun setSwipeListener(viewHolder: ProfileHolder) {
         val itemView = viewHolder.swipeHorizontalMenuLayout
