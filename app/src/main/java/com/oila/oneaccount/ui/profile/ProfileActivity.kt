@@ -1,6 +1,5 @@
 package com.oila.oneaccount.ui.profile
 
-import android.app.Application
 import android.app.Dialog
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -40,16 +39,20 @@ class ProfileActivity : BaseActivity(), ProfileContract.View {
         ButterKnife.bind(this)
         setSupportActionBar(toolbar)
 
+        setupAdapter()
+        recyclerView.adapter = profileAdapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        presenter.attachView(this)
+        presenter.loadProfile()
+    }
+
+    private fun setupAdapter() {
         profileAdapter.isMyProfile = true
         profileAdapter.mIntentCallback = IntentCallback { }
         profileAdapter.mProfileCallback = profileCallback
         profileAdapter.mSaveCallback = OnListItemClicked {
             presenter.saveProfile(mutableListOf(it))
         }
-        recyclerView.adapter = profileAdapter
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        presenter.attachView(this)
-        presenter.loadProfile()
     }
 
     override fun onBackPressed() {

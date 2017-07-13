@@ -9,7 +9,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DataManager @Inject constructor(private val oneAccountService: OneAccountService,
+open class DataManager @Inject constructor(private val oneAccountService: OneAccountService,
                                       private val databaseHelper: DatabaseHelper) {
 
     fun getProfileItems(): Observable<MutableList<ProfileItem>> {

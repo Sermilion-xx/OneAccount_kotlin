@@ -23,7 +23,6 @@ class DatabaseHelper @Inject constructor(val db: BriteDatabase) {
     fun setProfileItems(profileItems: Collection<ProfileItem>): Observable<ProfileItem> {
         return Observable.create<ProfileItem>({ emitter ->
             try {
-                Timber.log(0, "dfsdfdsfdsf")
                 profileItems.forEach {
                     val result = db.insert(Db.ProfileTable.TABLE_PROFILE,
                             Db.ProfileTable.toContentValues(it.key, it.value, it.type.name),
