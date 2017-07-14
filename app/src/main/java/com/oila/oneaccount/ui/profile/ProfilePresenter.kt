@@ -9,6 +9,7 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.lang.kotlin.subscribeBy
 import rx.schedulers.Schedulers
+import java.util.*
 import javax.inject.Inject
 
 
@@ -31,23 +32,23 @@ constructor(private val dataManager: DataManager) : ProfileContract.Presenter() 
                 .subscribeBy(
                         onNext = {
                             if (it.isEmpty()) {
+
                                 val items = SharedData.getInstance().items
                                 this.saveProfile(items)
                                 view.showProfile(items)
                             } else {
+                                Collections.sort(it, compareBy { it.order })
                                 view.showProfile(it)
                             }
                         },
                         onError = {
                             view.showError()
-                            it.printStackTrace()
                         }
                 )
     }
 
     fun saveProfile(items: List<ProfileItem>) {
         subscription?.unsubscribe()
-        view.showProgress()
         subscription = dataManager.setProfileItems(items)
                 .subscribeOn(Schedulers.io())
                 .subscribeBy(
@@ -56,7 +57,7 @@ constructor(private val dataManager: DataManager) : ProfileContract.Presenter() 
                             loadProfile()
                         },
                         onError = {
-                            view.hideProgress()
+                            it.printStackTrace()
                         }
                 )
     }
