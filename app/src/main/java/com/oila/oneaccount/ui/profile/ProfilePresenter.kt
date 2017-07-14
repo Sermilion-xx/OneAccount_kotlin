@@ -32,10 +32,8 @@ constructor(private val dataManager: DataManager) : ProfileContract.Presenter() 
                 .subscribeBy(
                         onNext = {
                             if (it.isEmpty()) {
-
                                 val items = SharedData.getInstance().items
-                                this.saveProfile(items)
-                                view.showProfile(items)
+                                view.onEmptyItems(items)
                             } else {
                                 Collections.sort(it, compareBy { it.order })
                                 view.showProfile(it)
@@ -43,13 +41,15 @@ constructor(private val dataManager: DataManager) : ProfileContract.Presenter() 
                         },
                         onError = {
                             view.showError()
+                            it.printStackTrace()
                         }
                 )
     }
 
     fun saveProfile(items: List<ProfileItem>) {
         subscription?.unsubscribe()
-        subscription = dataManager.setProfileItems(items)
+        val observable = dataManager.setProfileItems(items)
+        subscription = observable
                 .subscribeOn(Schedulers.io())
                 .subscribeBy(
                         onCompleted = {

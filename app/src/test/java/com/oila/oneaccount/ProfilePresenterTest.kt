@@ -1,8 +1,7 @@
 package com.oila.oneaccount
 
 
-import com.nhaarman.mockito_kotlin.doThrow
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import com.oila.oneaccount.data.DataManager
 import com.oila.oneaccount.data.model.profile.ProfileItem
 import com.oila.oneaccount.ui.main.ProfileContract
@@ -36,9 +35,6 @@ class ProfilePresenterTest {
     @Mock
     lateinit var mockDataManager: DataManager
 
-    @Mock
-    lateinit var mockDatabaseHelper: DatabaseHelper
-
     lateinit var mainPresenter: ProfilePresenter
 
     @Before
@@ -52,49 +48,32 @@ class ProfilePresenterTest {
         mainPresenter.detachView()
     }
 
-//    @Test
-//    fun loadProfileReturnsProfileItems() {
-//        val items = TestDataFactory.makeListProfile(10)
-//        whenever(mockDataManager.getProfileItems()).thenReturn(Observable.just(items))
-//
-//        mainPresenter.loadProfile()
-//        verify(mockMainMvpView).showProfile(items)
-//        verify(mockMainMvpView, never()).showError()
-//    }
-
     @Test
-    fun loadProfileReturningEmptyItemsCallsSetProfileItems() {
-        val items = mutableListOf<ProfileItem>()
-        val itemsToSave = TestDataFactory.makeListProfile(10)
+    fun loadProfileReturnsProfileItems() {
+        val items = TestDataFactory.makeListProfile(10)
         whenever(mockDataManager.getProfileItems()).thenReturn(Observable.just(items))
-        whenever(mockDataManager.setProfileItems(itemsToSave)).thenReturn(Observable.from(itemsToSave))
-        whenever(mockDatabaseHelper.setProfileItems(itemsToSave)).thenReturn(Observable.from(itemsToSave))
-//        whenever(mainPresenter.saveProfile(itemsToSave)).then {  }
 
         mainPresenter.loadProfile()
-//        verify(mainPresenter).saveProfile(itemsToSave)
-//        verify(mockMainMvpView).showProfile(itemsToSave)
+        verify(mockMainMvpView).showProfile(items)
         verify(mockMainMvpView, never()).showError()
     }
 
-//    @Test
-//    fun loadRibotsReturnsEmptyList() {
-//        whenever(mockDataManager.getProfileItems()).thenReturn(Observable.just(mutableListOf()))
-//
-//        mainPresenter.loadProfile()
-//        verify(mockMainMvpView).showError()
-//        verify(mockMainMvpView, never()).showProfile(anyList<ProfileItem>())
-//        verify(mockMainMvpView, never()).showError()
-//    }
-//
-//    @Test
-//    fun loadRibotsFails() {
-//        whenever(mockDataManager.getProfileItems()).
-//                thenReturn(Observable.error<MutableList<ProfileItem>>(RuntimeException()))
-//
-//        mainPresenter.loadProfile()
-//        verify(mockMainMvpView).showError()
-//        verify(mockMainMvpView, never()).showError()
-//        verify(mockMainMvpView, never()).showProfile(anyList<ProfileItem>())
-//    }
+
+    @Test
+    fun loadProfileItemsShowsDefaultItems() {
+        whenever(mockDataManager.getProfileItems()).thenReturn(Observable.just(mutableListOf()))
+
+        mainPresenter.loadProfile()
+        verify(mockMainMvpView).onEmptyItems(anyList())
+    }
+
+    @Test
+    fun loadProfileItemsFails() {
+        whenever(mockDataManager.getProfileItems()).
+                thenReturn(Observable.error<MutableList<ProfileItem>>(RuntimeException()))
+
+        mainPresenter.loadProfile()
+        verify(mockMainMvpView).showError()
+        verify(mockMainMvpView, never()).showProfile(anyList<ProfileItem>())
+    }
 }

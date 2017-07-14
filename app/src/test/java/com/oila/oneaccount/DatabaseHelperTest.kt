@@ -47,23 +47,19 @@ class DatabaseHelperTest {
 
         val cursor = databaseHelper.db.query("SELECT * FROM ${Db.ProfileTable.TABLE_PROFILE}")
         assertEquals(2, cursor.count)
-
         ribots.forEach {
             cursor.moveToNext()
-            assertEquals(it.key, Db.ProfileTable.parseCursor(cursor))
+            assertEquals(it.key, Db.ProfileTable.parseCursor(cursor).key)
         }
-
         cursor.close()
     }
 
     @Test
     fun getRibots() {
         val ribots = listOf(TestDataFactory.makeProfileItem("r3"), TestDataFactory.makeProfileItem("r4"))
-
         databaseHelper.setProfileItems(ribots).subscribe()
-
         val result = TestSubscriber<List<ProfileItem>>()
-        databaseHelper.getProfile().subscribe(result)
+        databaseHelper.getProfileItems().subscribe(result)
         result.assertNoErrors()
         result.assertValue(ribots)
     }

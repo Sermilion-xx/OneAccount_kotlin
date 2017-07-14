@@ -14,7 +14,7 @@ import javax.inject.Singleton
 @Singleton
 class DatabaseHelper @Inject constructor(val db: BriteDatabase) {
 
-    fun getProfile(): Observable<MutableList<ProfileItem>> {
+    fun getProfileItems(): Observable<MutableList<ProfileItem>> {
         return db.createQuery(Db.ProfileTable.TABLE_PROFILE,
                 "SELECT * FROM ${Db.ProfileTable.TABLE_PROFILE}")
                 .mapToList { Db.ProfileTable.parseCursor(it) }

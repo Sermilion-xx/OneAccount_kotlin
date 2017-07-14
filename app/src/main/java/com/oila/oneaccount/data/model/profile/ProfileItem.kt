@@ -57,6 +57,28 @@ class ProfileItem(val key: String, var value: String, val type: FieldType) : Com
         }
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+
+        other as ProfileItem
+
+        if (key != other.key) return false
+        if (value != other.value) return false
+        if (type != other.type) return false
+        if (order != other.order) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = key.hashCode()
+        result = 31 * result + value.hashCode()
+        result = 31 * result + type.hashCode()
+        result = 31 * result + order
+        return result
+    }
+
     companion object {
         val FIRSTNAME = "First name"
         val MIDDLENAME = "Middle name"
@@ -65,5 +87,7 @@ class ProfileItem(val key: String, var value: String, val type: FieldType) : Com
         val CONTACTS_SEPARATOR = "Contacts separator"
         val HEADER = "Field"
     }
+
+
 
 }

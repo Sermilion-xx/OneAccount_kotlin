@@ -13,7 +13,7 @@ open class DataManager @Inject constructor(private val oneAccountService: OneAcc
                                       private val databaseHelper: DatabaseHelper) {
 
     fun getProfileItems(): Observable<MutableList<ProfileItem>> {
-        return databaseHelper.getProfile()
+        return databaseHelper.getProfileItems()
     }
 
     fun setProfileItems(items: List<ProfileItem>): Observable<ProfileItem> {

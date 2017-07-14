@@ -1,6 +1,5 @@
 package com.oila.oneaccount
 
-import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.oila.oneaccount.commons.TestDataFactory
@@ -11,7 +10,6 @@ import com.oila.oneaccount.data.remote.OneAccountService
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.anyList
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import rx.Observable
@@ -45,7 +43,7 @@ class DataManagerTest {
 
     @Test
     fun setProfileItemsEmitsValues() {
-        val items = listOf(TestDataFactory.makeProfileItem("r1"), TestDataFactory.makeProfileItem("r2"))
+        val items = mutableListOf(TestDataFactory.makeProfileItem("r1"), TestDataFactory.makeProfileItem("r2"))
         stubSetProfileItemsHelperCalls(items)
 
         val result = TestSubscriber<ProfileItem>()
@@ -56,14 +54,14 @@ class DataManagerTest {
 
     @Test
     fun setProfileItemsCallsDatabase() {
-        val items = listOf(TestDataFactory.makeProfileItem("r3"), TestDataFactory.makeProfileItem("r4"))
+        val items = mutableListOf(TestDataFactory.makeProfileItem("r3"), TestDataFactory.makeProfileItem("r4"))
         stubSetProfileItemsHelperCalls(items)
         dataManager.setProfileItems(items).subscribe()
         verify(mockDatabaseHelper).setProfileItems(items)
     }
 
 
-    private fun stubSetProfileItemsHelperCalls(items: List<ProfileItem>) {
+    private fun stubSetProfileItemsHelperCalls(items: MutableList<ProfileItem>) {
         whenever(mockDatabaseHelper.setProfileItems(items)).thenReturn(Observable.from(items))
     }
 }

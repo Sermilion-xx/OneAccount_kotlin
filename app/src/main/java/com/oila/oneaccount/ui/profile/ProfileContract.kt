@@ -9,6 +9,7 @@ object ProfileContract {
     interface View: MvpView {
         fun showProfile(profileItems: MutableList<ProfileItem>)
         fun showError()
+        fun onEmptyItems(defaultItems: MutableList<ProfileItem>)
         fun showProgress()
         fun hideProgress()
     }

@@ -12,6 +12,7 @@ import android.widget.ImageView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.oila.oneaccount.R
+import com.oila.oneaccount.data.model.SharedData
 import com.oila.oneaccount.data.model.profile.ProfileItem
 import com.oila.oneaccount.ui.base.BaseActivity
 import com.oila.oneaccount.ui.callbacks.IntentCallback
@@ -121,6 +122,10 @@ class ProfileActivity : BaseActivity(), ProfileContract.View {
 
     override fun showError() {
         toast(R.string.error_loading_profile)
+    }
+
+    override fun onEmptyItems(defaultItems: MutableList<ProfileItem>) {
+        presenter.saveProfile(defaultItems)
     }
 
     override fun onDestroy() {
