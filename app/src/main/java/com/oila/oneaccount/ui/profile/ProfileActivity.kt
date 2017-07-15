@@ -120,12 +120,20 @@ class ProfileActivity : BaseActivity(), ProfileContract.View {
         profileAdapter.notifyDataSetChanged()
     }
 
-    override fun showError() {
-        toast(R.string.error_loading_profile)
+    override fun showError(type: Int) {
+        if (type == ProfileContract.View.profileLoadError) {
+            toast(R.string.error_loading_profile)
+        } else {
+            toast(R.string.error_saving_profile)
+        }
     }
 
     override fun onEmptyItems(defaultItems: MutableList<ProfileItem>) {
         presenter.saveProfile(defaultItems)
+    }
+
+    override fun onProfileSaved() {
+        presenter.loadProfile()
     }
 
     override fun onDestroy() {

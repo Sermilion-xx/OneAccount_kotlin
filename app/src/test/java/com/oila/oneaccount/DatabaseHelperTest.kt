@@ -37,17 +37,17 @@ class DatabaseHelperTest {
     }
 
     @Test
-    fun setRibots() {
-        val ribots = listOf(TestDataFactory.makeProfileItem("r1"), TestDataFactory.makeProfileItem("r2"))
+    fun setProfileItems() {
+        val profileItems = listOf(TestDataFactory.makeProfileItem("r1"), TestDataFactory.makeProfileItem("r2"))
 
         val result = TestSubscriber<ProfileItem>()
-        databaseHelper.setProfileItems(ribots).subscribe(result)
+        databaseHelper.setProfileItems(profileItems).subscribe(result)
         result.assertNoErrors()
-        result.assertReceivedOnNext(ribots)
+        result.assertReceivedOnNext(profileItems)
 
         val cursor = databaseHelper.db.query("SELECT * FROM ${Db.ProfileTable.TABLE_PROFILE}")
         assertEquals(2, cursor.count)
-        ribots.forEach {
+        profileItems.forEach {
             cursor.moveToNext()
             assertEquals(it.key, Db.ProfileTable.parseCursor(cursor).key)
         }
@@ -55,12 +55,12 @@ class DatabaseHelperTest {
     }
 
     @Test
-    fun getRibots() {
-        val ribots = listOf(TestDataFactory.makeProfileItem("r3"), TestDataFactory.makeProfileItem("r4"))
-        databaseHelper.setProfileItems(ribots).subscribe()
+    fun getProfileItems() {
+        val profileItems = listOf(TestDataFactory.makeProfileItem("r3"), TestDataFactory.makeProfileItem("r4"))
+        databaseHelper.setProfileItems(profileItems).subscribe()
         val result = TestSubscriber<List<ProfileItem>>()
         databaseHelper.getProfileItems().subscribe(result)
         result.assertNoErrors()
-        result.assertValue(ribots)
+        result.assertValue(profileItems)
     }
 }

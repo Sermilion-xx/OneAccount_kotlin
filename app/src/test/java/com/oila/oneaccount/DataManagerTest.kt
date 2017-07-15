@@ -48,6 +48,7 @@ class DataManagerTest {
 
         val result = TestSubscriber<ProfileItem>()
         dataManager.setProfileItems(items).subscribe(result)
+        verify(mockDatabaseHelper).setProfileItems(items)
         result.assertNoErrors()
         result.assertReceivedOnNext(items)
     }
@@ -56,7 +57,10 @@ class DataManagerTest {
     fun setProfileItemsCallsDatabase() {
         val items = mutableListOf(TestDataFactory.makeProfileItem("r3"), TestDataFactory.makeProfileItem("r4"))
         stubSetProfileItemsHelperCalls(items)
-        dataManager.setProfileItems(items).subscribe()
+        val result = TestSubscriber<ProfileItem>()
+        dataManager.setProfileItems(items).subscribe(result)
+        result.assertNoErrors()
+        result.assertReceivedOnNext(items)
         verify(mockDatabaseHelper).setProfileItems(items)
     }
 

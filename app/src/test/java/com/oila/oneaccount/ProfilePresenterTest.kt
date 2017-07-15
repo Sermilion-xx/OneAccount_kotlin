@@ -1,7 +1,9 @@
 package com.oila.oneaccount
 
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.whenever
+import com.oila.oneaccount.commons.TestDataFactory
 import com.oila.oneaccount.data.DataManager
 import com.oila.oneaccount.data.model.profile.ProfileItem
 import com.oila.oneaccount.ui.main.ProfileContract
@@ -17,9 +19,6 @@ import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import rx.Observable
-import com.oila.oneaccount.commons.TestDataFactory
-import com.oila.oneaccount.data.local.DatabaseHelper
-import okhttp3.internal.Util
 import uk.co.ribot.androidboilerplate.util.RxSchedulersOverrideRule
 
 
@@ -55,12 +54,12 @@ class ProfilePresenterTest {
 
         mainPresenter.loadProfile()
         verify(mockMainMvpView).showProfile(items)
-        verify(mockMainMvpView, never()).showError()
+        verify(mockMainMvpView, never()).showError(ProfileContract.View.profileLoadError)
     }
 
 
     @Test
-    fun loadProfileItemsShowsDefaultItems() {
+    fun loadProfileItemsShowsDefaultItemsIfDbReturnsEmptyList() {
         whenever(mockDataManager.getProfileItems()).thenReturn(Observable.just(mutableListOf()))
 
         mainPresenter.loadProfile()
@@ -73,7 +72,29 @@ class ProfilePresenterTest {
                 thenReturn(Observable.error<MutableList<ProfileItem>>(RuntimeException()))
 
         mainPresenter.loadProfile()
-        verify(mockMainMvpView).showError()
+        verify(mockMainMvpView).showError(ProfileContract.View.profileLoadError)
         verify(mockMainMvpView, never()).showProfile(anyList<ProfileItem>())
+    }
+
+
+    @Test
+    fun saveProfileSuccessCallsOnProfileSaved() {
+        val items = TestDataFactory.makeListProfile(10)
+        whenever(mockDataManager.setProfileItems(items)).thenReturn(Observable.from(items))
+
+        mainPresenter.saveProfile(items)
+        verify(mockMainMvpView).onProfileSaved()
+        verify(mockMainMvpView, never()).showError(ProfileContract.View.profileSaveError)
+    }
+
+    @Test
+    fun saveProfileFailShowsError() {
+        val items = TestDataFactory.makeListProfile(10)
+        whenever(mockDataManager.setProfileItems(items)).
+        thenReturn(Observable.error<ProfileItem>(RuntimeException()))
+
+        mainPresenter.saveProfile(items)
+        verify(mockMainMvpView, never()).onProfileSaved()
+        verify(mockMainMvpView).showError(ProfileContract.View.profileSaveError)
     }
 }

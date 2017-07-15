@@ -40,8 +40,7 @@ constructor(private val dataManager: DataManager) : ProfileContract.Presenter() 
                             }
                         },
                         onError = {
-                            view.showError()
-                            it.printStackTrace()
+                            view.showError(ProfileContract.View.profileLoadError)
                         }
                 )
     }
@@ -53,11 +52,10 @@ constructor(private val dataManager: DataManager) : ProfileContract.Presenter() 
                 .subscribeOn(Schedulers.io())
                 .subscribeBy(
                         onCompleted = {
-                            view.hideProgress()
-                            loadProfile()
+                            view.onProfileSaved()
                         },
                         onError = {
-                            it.printStackTrace()
+                            view.showError(ProfileContract.View.profileSaveError)
                         }
                 )
     }
