@@ -1,6 +1,8 @@
 package com.oila.oneaccount.ui.profile
 
 import android.app.Dialog
+import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -32,6 +34,13 @@ class ProfileActivity : BaseActivity(), ProfileContract.View {
     @BindView(R.id.recyclerView) lateinit var recyclerView: RecyclerView
 
     private var mMenuVisible: Boolean = false
+
+    companion object {
+        fun getStartIntent(context: Context): Intent {
+            val intent = Intent(context, ProfileActivity::class.java)
+            return intent
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

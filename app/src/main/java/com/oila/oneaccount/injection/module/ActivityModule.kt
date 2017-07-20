@@ -24,10 +24,4 @@ open class ActivityModule(protected val activity: Activity) {
         return activity
     }
 
-    @Provides
-    @PerActivity
-    internal fun provideAdapter(): ProfileAdapter {
-        return ProfileAdapter(activity.application)
-    }
-
 }

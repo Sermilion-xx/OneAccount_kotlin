@@ -13,7 +13,7 @@ import java.util.*
 import javax.inject.Inject
 
 
-@ConfigPersistent
+@ConfigPersistent //to survive configuration change
 class ProfilePresenter
 @Inject
 constructor(private val dataManager: DataManager) : ProfileContract.Presenter() {

@@ -1,6 +1,6 @@
 package com.oila.oneaccount.ui.profile
 
-import android.app.Application
+import android.content.Context
 import android.net.Uri
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
@@ -15,7 +15,6 @@ import com.oila.oneaccount.R
 import com.oila.oneaccount.data.model.SharedData
 import com.oila.oneaccount.data.model.profile.FieldType
 import com.oila.oneaccount.data.model.profile.ProfileItem
-import com.oila.oneaccount.injection.ApplicationContext
 import com.oila.oneaccount.ui.callbacks.IntentCallback
 import com.oila.oneaccount.ui.callbacks.OnListItemClicked
 import com.oila.oneaccount.util.hideKeyboard
@@ -25,11 +24,10 @@ import com.tubb.smrv.SwipeMenuLayout
 import com.tubb.smrv.listener.SwipeSwitchListener
 import org.jetbrains.anko.find
 import java.util.*
+import javax.inject.Inject
 
 
-class ProfileAdapter
-
-constructor(@ApplicationContext var app: Application) : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
+class ProfileAdapter @Inject constructor(): RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
 
     var isMyProfile: Boolean = false
     var mIntentCallback: IntentCallback<Void>? = null
@@ -94,7 +92,7 @@ constructor(@ApplicationContext var app: Application) : RecyclerView.Adapter<Pro
                     markItemAsSelected(holder.mTick!!, item)
                 }
             })
-            onSelectPressed(holder, item, position)
+            onSelectPressed(holder, item)
         }
 
         if (viewType == TYPE_PRIMARY_FIELD || viewType == TYPE_CUSTOM_FIELDS) {
@@ -106,7 +104,7 @@ constructor(@ApplicationContext var app: Application) : RecyclerView.Adapter<Pro
         }
     }
 
-    private fun onSelectPressed(viewHolder: ProfileHolder, item: ProfileItem, position: Int) {
+    private fun onSelectPressed(viewHolder: ProfileHolder, item: ProfileItem) {
         viewHolder.mSelect.setOnClickListener({
             markItemAsSelected(viewHolder.mTick!!, item)
             viewHolder.swipeHorizontalMenuLayout.smoothCloseMenu()
@@ -169,6 +167,7 @@ constructor(@ApplicationContext var app: Application) : RecyclerView.Adapter<Pro
     }
 
     private fun initFieldsViewHolder(viewHolder: ProfileHolder, item: ProfileItem) {
+        val context: Context = viewHolder.mField.context
         val position = viewHolder.adapterPosition
         val itemView = viewHolder.swipeHorizontalMenuLayout
         val key = item.key
@@ -187,7 +186,7 @@ constructor(@ApplicationContext var app: Application) : RecyclerView.Adapter<Pro
         viewHolder.mField.setOnEditorActionListener({ v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 viewHolder.mField.clearFocus()
-                hideKeyboard(v, app)
+                hideKeyboard(v, context)
             }
             false
         })
@@ -211,7 +210,7 @@ constructor(@ApplicationContext var app: Application) : RecyclerView.Adapter<Pro
 
         viewHolder.mField.setOnFocusChangeListener({ v, hasFocus ->
             if (hasFocus) {
-                showKeyboard(v, app)
+                showKeyboard(v, context)
                 viewHolder.mField.setText(item.value)
                 viewHolder.mField.setSelection(item.value.length)
                 viewHolder.mField.hint = ""
@@ -227,7 +226,7 @@ constructor(@ApplicationContext var app: Application) : RecyclerView.Adapter<Pro
                     viewHolder.mFieldTitle.visibility = View.GONE
                 }
                 mSaveCallback?.onClick(item)
-                hideKeyboard(v, app)
+                hideKeyboard(v, context)
             }
         })
     }

@@ -14,12 +14,12 @@ import android.view.inputmethod.InputMethodManager
  * <a href="http://www.github.com/sermilion>github</a>
  * ---------------------------------------------------
  */
-fun hideKeyboard(v: View, app: Application) {
-    val imm = app.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+fun hideKeyboard(v: View, context: Context) {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(v.windowToken, 0)
 }
 
-fun showKeyboard(v: View, app: Application) {
-    val imm = app.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+fun showKeyboard(v: View, context: Context) {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT)
 }

@@ -60,7 +60,7 @@ class DrawerAdapter(private val mItems: List<DrawerItem>) : RecyclerView.Adapter
                 holder.mTitle.text = row.textOne
             } else if (getItemViewType(holder.adapterPosition) == TYPE_ITEM) {
                 holder.mTitle.text = row.textOne
-                holder.mImageView!!.setImageResource(row.rowIcon)
+                holder.mImageView.setImageResource(row.rowIcon)
             }
 
             holder.mTitle.setOnClickListener {

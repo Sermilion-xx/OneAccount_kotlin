@@ -29,6 +29,10 @@ open class OneApplication : Application() {
                 .build()
     }
 
+    fun setComponent(component: ApplicationComponent) {
+        this.applicationComponent = component
+    }
+
     companion object {
         private lateinit var INSTANCE: OneApplication
         fun getInstance(): OneApplication {

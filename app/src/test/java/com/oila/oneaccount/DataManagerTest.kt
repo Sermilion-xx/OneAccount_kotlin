@@ -14,6 +14,12 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import rx.Observable
 import rx.observers.TestSubscriber
+import org.mockito.quality.Strictness
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
+import org.junit.Rule
+
+
 
 
 /**
@@ -24,8 +30,14 @@ import rx.observers.TestSubscriber
  * 3. Optionally write a SEPARATE test that verifies that your method is calling the right helper
  * using Mockito.verify()
  */
-@RunWith(MockitoJUnitRunner::class)
+//@RunWith(MockitoJUnitRunner.StrictStubs::class)
 class DataManagerTest {
+
+    //Rule to be able to use @Mock annotations without  MockitoAnnotations.initMocks(testClass)
+    //in base class or test runner
+    //(used as function to avoid "ValidationError: The @Rule 'rule' must be public" exception)
+    //Better alternative is using "@RunWith(MockitoJUnitRunner.StrictStubs::class)"
+    @Rule fun name(): MockitoRule = MockitoJUnit.rule().strictness(Strictness.STRICT_STUBS)
 
     @Mock
     lateinit var mockDatabaseHelper: DatabaseHelper
@@ -34,7 +46,7 @@ class DataManagerTest {
 
     @Before
     fun setUp() {
-        dataManager = DataManager(object :OneAccountService {
+        dataManager = DataManager(object: OneAccountService {
             override fun getProfile(): Observable<List<ProfileItem>> {
                 TODO("not implemented")
             }

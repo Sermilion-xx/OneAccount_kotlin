@@ -1,7 +1,6 @@
 package com.oila.oneaccount
 
 
-import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.whenever
 import com.oila.oneaccount.commons.TestDataFactory
 import com.oila.oneaccount.data.DataManager
@@ -21,8 +20,9 @@ import org.mockito.junit.MockitoJUnitRunner
 import rx.Observable
 import uk.co.ribot.androidboilerplate.util.RxSchedulersOverrideRule
 
-
-@RunWith(MockitoJUnitRunner::class)
+//Runner to be able to use @Mock annotations without  MockitoAnnotations.initMocks(testClass)
+//in base class or test runner
+@RunWith(MockitoJUnitRunner.StrictStubs::class)
 class ProfilePresenterTest {
 
     @Rule @JvmField

@@ -61,10 +61,13 @@ open class BaseActivity : AppCompatActivity() {
         activityId = savedInstanceState?.getLong(KEY_ACTIVITY_ID) ?: NEXT_ID.getAndIncrement()
         val configPersistentComponent = componentsMap.getOrPut(activityId, {
             val component = (applicationContext as OneApplication).applicationComponent
+
             DaggerConfigPersistentComponent.builder()
+                    //depends on ApplicationComponent, so set it
                     .applicationComponent(component)
                     .build()
         })
+
         activityComponent = configPersistentComponent.activityComponent(ActivityModule(this))
     }
 
@@ -81,29 +84,25 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     protected fun setupToolbar(title: String, vararg homeAsUpIndicator: Int): Toolbar? {
-        if (mToolbar != null) {
-            mToolbar!!.title = title
-            setSupportActionBar(mToolbar)
-            if (homeAsUpIndicator.isNotEmpty()) {
-                if (supportActionBar != null) {
-                    supportActionBar!!.setHomeAsUpIndicator(homeAsUpIndicator[0])
-                    supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-                    supportActionBar!!.setDisplayShowHomeEnabled(true)
-                }
+        mToolbar.title = title
+        setSupportActionBar(mToolbar)
+        if (homeAsUpIndicator.isNotEmpty()) {
+            if (supportActionBar != null) {
+                supportActionBar!!.setHomeAsUpIndicator(homeAsUpIndicator[0])
+                supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+                supportActionBar!!.setDisplayShowHomeEnabled(true)
             }
         }
         return mToolbar
     }
 
     protected fun setupToolbar(title: String, drawable: Drawable): Toolbar? {
-        if (mToolbar != null) {
-            mToolbar!!.title = title
-            setSupportActionBar(mToolbar)
-            if (supportActionBar != null) {
-                supportActionBar!!.setHomeAsUpIndicator(drawable)
-                supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-                supportActionBar!!.setDisplayShowHomeEnabled(true)
-            }
+        mToolbar.title = title
+        setSupportActionBar(mToolbar)
+        if (supportActionBar != null) {
+            supportActionBar!!.setHomeAsUpIndicator(drawable)
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+            supportActionBar!!.setDisplayShowHomeEnabled(true)
         }
         return mToolbar
     }
@@ -125,24 +124,24 @@ open class BaseActivity : AppCompatActivity() {
 
         mActionBarDrawerToggle = ActionBarDrawerToggle(this, mDrawer, mToolbar, R.string.drawer_open, R.string.drawer_closed)
         if (mActionBarDrawerToggle != null) {
-            mDrawer?.addDrawerListener(mActionBarDrawerToggle!!)
-            mDrawer?.addDrawerListener(mActionBarDrawerToggle!!)
+            mDrawer.addDrawerListener(mActionBarDrawerToggle!!)
+            mDrawer.addDrawerListener(mActionBarDrawerToggle!!)
         }
-        navigationView?.setNavigationItemSelectedListener({ item ->
+        navigationView.setNavigationItemSelectedListener({ item ->
             when (item.itemId) {
-                R.id.menu_home -> mDrawer?.closeDrawers()
+                R.id.menu_home -> mDrawer.closeDrawers()
             }
             false
         })
-        mDrawer?.post({ mActionBarDrawerToggle?.syncState() })
+        mDrawer.post({ mActionBarDrawerToggle?.syncState() })
     }
     //===========================================================================================//
 
     fun showProgress() {
-        mProgress?.visibility = View.VISIBLE
+        mProgress.visibility = View.VISIBLE
     }
 
     fun hideProgress() {
-        mProgress?.visibility = View.GONE
+        mProgress.visibility = View.GONE
     }
 }

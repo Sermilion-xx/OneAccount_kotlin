@@ -31,7 +31,6 @@ class DatabaseHelper @Inject constructor(val db: BriteDatabase) {
                 }
                 emitter.onCompleted()
             } catch (exception: SQLException) {
-                Timber.e(exception)
                 emitter.onError(exception)
             }
         }, Emitter.BackpressureMode.BUFFER)

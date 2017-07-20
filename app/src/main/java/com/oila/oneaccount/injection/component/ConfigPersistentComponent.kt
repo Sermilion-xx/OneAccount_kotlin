@@ -10,9 +10,14 @@ import com.oila.oneaccount.injection.module.ActivityModule
  * survives configuration changes.
  * Use the [ConfigPersistent] scope to annotate dependencies that need to survive
  * configuration changes (for example Presenters).
+ *
+ * Any class annotated with [ConfigPersistent] is a singleton in the scope, so as long as
+ * we get same ConfigPersistentComponent in activity configuration change we will
+ * inject the same instance of class
  */
 @ConfigPersistent
 @Component(dependencies = arrayOf(ApplicationComponent::class))
 interface ConfigPersistentComponent {
     fun activityComponent(activityModule: ActivityModule): ActivityComponent
 }
+

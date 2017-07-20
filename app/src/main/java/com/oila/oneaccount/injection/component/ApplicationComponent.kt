@@ -16,8 +16,9 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = arrayOf(ApplicationModule::class, DataModule::class))
 interface ApplicationComponent {
-    fun inject(syncService: SyncService)
 
+    fun inject(syncService: SyncService)
+//exposing dependencies from ApplicationComponent to components that depend on it
     @ApplicationContext fun context(): Context
     fun application(): Application
     fun oneAccountService(): OneAccountService

@@ -17,7 +17,6 @@ package com.oila.oneaccount.util
  */
 
 
-import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -31,11 +30,10 @@ import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
 import android.webkit.MimeTypeMap
-
 import java.io.File
 import java.io.FileFilter
 import java.text.DecimalFormat
-import java.util.Comparator
+import java.util.*
 
 /**
  * @author Peli
@@ -434,35 +432,33 @@ object FileUtils {
         }
 
         var bm: Bitmap? = null
-        if (uri != null) {
-            val resolver = context.contentResolver
-            var cursor: Cursor? = null
-            try {
-                cursor = resolver.query(uri, null, null, null, null)
-                if (cursor!!.moveToFirst()) {
-                    val id = cursor.getInt(0)
-                    if (DEBUG)
-                        Log.d(TAG, "Got thumb ID: " + id)
-
-                    if (mimeType.contains("video")) {
-                        bm = MediaStore.Video.Thumbnails.getThumbnail(
-                                resolver,
-                                id.toLong(),
-                                MediaStore.Video.Thumbnails.MINI_KIND, null)
-                    } else if (mimeType.contains(FileUtils.MIME_TYPE_IMAGE)) {
-                        bm = MediaStore.Images.Thumbnails.getThumbnail(
-                                resolver,
-                                id.toLong(),
-                                MediaStore.Images.Thumbnails.MINI_KIND, null)
-                    }
-                }
-            } catch (e: Exception) {
+        val resolver = context.contentResolver
+        var cursor: Cursor? = null
+        try {
+            cursor = resolver.query(uri, null, null, null, null)
+            if (cursor!!.moveToFirst()) {
+                val id = cursor.getInt(0)
                 if (DEBUG)
-                    Log.e(TAG, "getThumbnail", e)
-            } finally {
-                if (cursor != null)
-                    cursor.close()
+                    Log.d(TAG, "Got thumb ID: " + id)
+
+                if (mimeType.contains("video")) {
+                    bm = MediaStore.Video.Thumbnails.getThumbnail(
+                            resolver,
+                            id.toLong(),
+                            MediaStore.Video.Thumbnails.MINI_KIND, null)
+                } else if (mimeType.contains(FileUtils.MIME_TYPE_IMAGE)) {
+                    bm = MediaStore.Images.Thumbnails.getThumbnail(
+                            resolver,
+                            id.toLong(),
+                            MediaStore.Images.Thumbnails.MINI_KIND, null)
+                }
             }
+        } catch (e: Exception) {
+            if (DEBUG)
+                Log.e(TAG, "getThumbnail", e)
+        } finally {
+            if (cursor != null)
+                cursor.close()
         }
         return bm
     }

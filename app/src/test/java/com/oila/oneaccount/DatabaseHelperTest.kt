@@ -5,7 +5,7 @@ import com.oila.oneaccount.data.local.Db
 import com.oila.oneaccount.data.local.OneDBOpenHelper
 import com.oila.oneaccount.data.model.profile.ProfileItem
 import com.squareup.sqlbrite.SqlBrite
-import junit.framework.Assert.assertEquals
+//import junit.framework.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,15 +44,18 @@ class DatabaseHelperTest {
         databaseHelper.setProfileItems(profileItems).subscribe(result)
         result.assertNoErrors()
         result.assertReceivedOnNext(profileItems)
+        result.assertCompleted()
 
         val cursor = databaseHelper.db.query("SELECT * FROM ${Db.ProfileTable.TABLE_PROFILE}")
-        assertEquals(2, cursor.count)
+        assert(2 == cursor.count)
         profileItems.forEach {
             cursor.moveToNext()
-            assertEquals(it.key, Db.ProfileTable.parseCursor(cursor).key)
+            assert(it.key == (Db.ProfileTable.parseCursor(cursor).key))
         }
         cursor.close()
     }
+
+
 
     @Test
     fun getProfileItems() {
